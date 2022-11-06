@@ -1,0 +1,14 @@
+{
+	"service": {
+		"uuid": "7c94aa24-8193-4720-9626-8dedb07baf6f",
+		"characteristics": {
+			"humidity": {
+				"uuid": "eedba101-797c-4e63-a0b9-542b4eb74bb7",
+				"maxBytes": 4,
+				"type": "Array",
+				"permissions": "read",
+				"properties": "notify"
+			}
+		}
+	}
+}
