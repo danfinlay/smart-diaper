@@ -12,23 +12,23 @@
  *
  */
  /*
-	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Services/org.bluetooth.service.health_thermometer.xml
-	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.temperature_measurement.xml
+	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Services/org.bluetooth.service.heart_rate.xml
+	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Services/org.bluetooth.service.generic_access.xml
+	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Services/org.bluetooth.service.battery_service.xml
+	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.heart_rate_measurement.xml
+	https://www.bluetooth.com/wp-content/uploads/Sitecore-Media-Library/Gatt/Xml/Characteristics/org.bluetooth.characteristic.body_sensor_location.xml
  */
 
 import BLEServer from "bleserver";
 import {uuid} from "btutils";
 import Timer from "timer";
 
-const TEMP_SERVICE_UUID = uuid`1809`;
-const HUMIDITY_SERVICE_UUID = uuid`7c94aa248193472096268dedb07baf6f`
+const HEART_RATE_SERVIE_UUID = uuid`180D`;
+const BATTERY_SERVICE_UUID = uuid`180F`;
 
-class SmartDiaperService extends BLEServer {
+class HeartRateService extends BLEServer {
 	onReady() {
 		this.deviceName = "SmartyPants";
-		// this.sensor = new I2C({address: 0x40 /* might be 0x41 */});
-		this.sensor = new I2C({sda: 41, scl: 40, address: 0x40 /* might be 0x41 */});
-		this.reading = new UInt8Array(2);
 		this.onDisconnected();
 	}
 	onConnected() {
@@ -37,7 +37,7 @@ class SmartDiaperService extends BLEServer {
 	onDisconnected() {
 		this.stopMeasurements();
 		this.startAdvertising({
-			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [TEMP_SERVICE_UUID, HUMIDITY_SERVICE_UUID]}
+			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [HEART_RATE_SERVIE_UUID, BATTERY_SERVICE_UUID]}
 		});
 	}
 	onCharacteristicNotifyEnabled(characteristic) {
@@ -46,21 +46,29 @@ class SmartDiaperService extends BLEServer {
 	onCharacteristicNotifyDisabled(characteristic) {
 		this.stopMeasurements();
 	}
-	get temperature() {
-		sensor.read(4, this.reading);
-		return this.reading;
-	}
 	startMeasurements(characteristic) {
+		this.bump = +1;
 		this.timer = Timer.repeat(id => {
-			this.notifyValue(characteristic, this.reading);
-		}, 5000);
+			this.notifyValue(characteristic, this.bpm);
+			this.bpm[1] += this.bump;
+			if (this.bpm[1] === 65) {
+				this.bump = -1;
+			}
+			else if (this.bpm[1] === 55) {
+				this.bump = +1;
+			}
+		}, 1000);
 	}
 	stopMeasurements() {
 		if (this.timer) {
 			Timer.clear(this.timer);
 			delete this.timer;
 		}
+		this.bpm = [0, 60]; // flags, beats per minute
 	}
 }
 
-let sds = new SmartDiaperService;
+let hrs = new HeartRateService;
+
+
+

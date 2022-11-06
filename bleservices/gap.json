@@ -1,9 +1,9 @@
 {
 	"service": {
-		"uuid": "d524c1552abd4135b3efcece9408241",
+		"uuid": "1800",
 		"characteristics": {
 			"device_name": {
-				"uuid": "8d1f3afed589408f8c4d51abe239b1b4",
+				"uuid": "2A00",
 				"maxBytes": 12,
 				"type": "String",
 				"permissions": "read",
@@ -11,12 +11,12 @@
 				"value": "SmartyPants"
 			},
 			"appearance": {
-				"uuid": "5512edee4c41210b795ee7de858491b",
+				"uuid": "2A01",
 				"maxBytes": 2,
 				"type": "Uint16",
 				"permissions": "read",
 				"properties": "read",
-				"value": 768
+				"value": 832
 			}
 		}
 	}
