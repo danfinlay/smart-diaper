@@ -1,9 +1,9 @@
 {
 	"service": {
-		"uuid": "d524c155-2abd-4135-ab3e-fcece9408241",
+		"uuid": "d524c1552abd4135b3efcece9408241",
 		"characteristics": {
 			"device_name": {
-				"uuid": "8d1f3afe-d589-408f-8c4d-51abe239b1b4",
+				"uuid": "8d1f3afed589408f8c4d51abe239b1b4",
 				"maxBytes": 12,
 				"type": "String",
 				"permissions": "read",
@@ -11,7 +11,7 @@
 				"value": "SmartyPants"
 			},
 			"appearance": {
-				"uuid": "5512edee-4c41-4210-b795-ee7de858491b",
+				"uuid": "5512edee4c41210b795ee7de858491b",
 				"maxBytes": 2,
 				"type": "Uint16",
 				"permissions": "read",

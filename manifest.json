@@ -2,14 +2,21 @@
 	"include": [
 		"$(MODDABLE)/examples/manifest_base.json",
 		"$(MODDABLE)/modules/network/ble/manifest_server.json"
-	],
+	],	
 	"build":{
-    "ESP32_SUBCLASS": "esp32s3"
-  },
-  "modules": {
+		"SDKCONFIGPATH": "./sdkconfig.defaults",
+		"ESP32_SUBCLASS": "esp32s3"
+	},
+	"modules": {
 		"*": [
 			"./main"
 		]
+	},
+	"defines": {
+		"ble": {
+			"server": true,
+			"max_connections": 3
+		}
 	},
 	"ble":{
 		"*": [

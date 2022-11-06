@@ -20,15 +20,15 @@ import BLEServer from "bleserver";
 import {uuid} from "btutils";
 import Timer from "timer";
 
-const SMART_DIAPER_SERVICE_UUID = uuid`d524c155-2abd-4135-ab3e-fcece9408241`;
-const HUMIDITY_SERVICE_UUID = uuid`7c94aa24-8193-4720-9626-8dedb07baf6f`
+const TEMP_SERVICE_UUID = uuid`1809`;
+const HUMIDITY_SERVICE_UUID = uuid`7c94aa248193472096268dedb07baf6f`
 
 class SmartDiaperService extends BLEServer {
 	onReady() {
 		this.deviceName = "SmartyPants";
 		// this.sensor = new I2C({address: 0x40 /* might be 0x41 */});
 		this.sensor = new I2C({sda: 41, scl: 40, address: 0x40 /* might be 0x41 */});
-		this.reading = new UInt8Array(4);
+		this.reading = new UInt8Array(2);
 		this.onDisconnected();
 	}
 	onConnected() {
@@ -37,7 +37,7 @@ class SmartDiaperService extends BLEServer {
 	onDisconnected() {
 		this.stopMeasurements();
 		this.startAdvertising({
-			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [SMART_DIAPER_SERVICE_UUID, HUMIDITY_SERVICE_UUID]}
+			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [TEMP_SERVICE_UUID, HUMIDITY_SERVICE_UUID]}
 		});
 	}
 	onCharacteristicNotifyEnabled(characteristic) {
@@ -53,7 +53,7 @@ class SmartDiaperService extends BLEServer {
 	startMeasurements(characteristic) {
 		this.timer = Timer.repeat(id => {
 			this.notifyValue(characteristic, this.reading);
-		}, 250);
+		}, 5000);
 	}
 	stopMeasurements() {
 		if (this.timer) {
