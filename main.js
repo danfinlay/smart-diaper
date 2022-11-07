@@ -23,21 +23,23 @@ import BLEServer from "bleserver";
 import {uuid} from "btutils";
 import Timer from "timer";
 
-const HEART_RATE_SERVIE_UUID = uuid`180D`;
-const BATTERY_SERVICE_UUID = uuid`180F`;
+const DIAPER_SERVICE_UUID = uuid`0817a335-f1cb-42c2-946c-60441c01055e`;
+const sensor = new I2C({sda: 41, scl: 40, address: 0x40 /* might be 0x41 */});
 
 class HeartRateService extends BLEServer {
 	onReady() {
 		this.deviceName = "SmartyPants";
+        this.reading = new UInt8Array(4);
 		this.onDisconnected();
 	}
 	onConnected() {
-		this.stopAdvertising();
+		// Trying out continuing to advertise, since now supporting up to 3 connections:
+		// this.stopAdvertising();
 	}
 	onDisconnected() {
 		this.stopMeasurements();
 		this.startAdvertising({
-			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [HEART_RATE_SERVIE_UUID, BATTERY_SERVICE_UUID]}
+			advertisingData: {flags: 6, completeName: this.deviceName, completeUUID16List: [DIAPER_SERVICE_UUID]}
 		});
 	}
 	onCharacteristicNotifyEnabled(characteristic) {
@@ -47,16 +49,9 @@ class HeartRateService extends BLEServer {
 		this.stopMeasurements();
 	}
 	startMeasurements(characteristic) {
-		this.bump = +1;
 		this.timer = Timer.repeat(id => {
-			this.notifyValue(characteristic, this.bpm);
-			this.bpm[1] += this.bump;
-			if (this.bpm[1] === 65) {
-				this.bump = -1;
-			}
-			else if (this.bpm[1] === 55) {
-				this.bump = +1;
-			}
+			sensor.read(2, this.reading);
+			this.notifyValue(characteristic, this.reading);
 		}, 1000);
 	}
 	stopMeasurements() {
@@ -64,7 +59,6 @@ class HeartRateService extends BLEServer {
 			Timer.clear(this.timer);
 			delete this.timer;
 		}
-		this.bpm = [0, 60]; // flags, beats per minute
 	}
 }
 

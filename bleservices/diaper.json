@@ -1,0 +1,29 @@
+{
+	"service": {
+		"uuid": "0817a335-f1cb-42c2-946c-60441c01055e",
+		"characteristics": {
+			"device_name": {
+				"uuid": "6b9de482-65b0-4636-9c2f-dbc14f034215",
+				"maxBytes": 12,
+				"type": "String",
+				"permissions": "read",
+				"properties": "read",
+				"value": "SmartyPants"
+			},
+			"humidity": {
+				"uuid": "c72347ee-27b7-44df-b7ed-c3dbfd99c440",
+				"maxBytes": 2,
+				"type": "UInt8Array",
+				"permissions": "read",
+				"properties": "read,notify"
+			},
+			"temperature": {
+				"uuid": "05a417ba-168a-48f2-9664-4a3f3abec498",
+				"maxBytes": 2,
+				"type": "UInt8Array",
+				"permissions": "read",
+				"properties": "read,notify"
+			}
+		}
+	}
+}
