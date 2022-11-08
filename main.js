@@ -22,11 +22,12 @@
 import BLEServer from "bleserver";
 import {uuid} from "btutils";
 import Timer from "timer";
+import I2C from "pins/i2c";
 
 const DIAPER_SERVICE_UUID = uuid`0817a335-f1cb-42c2-946c-60441c01055e`;
 const sensor = new I2C({sda: 41, scl: 40, address: 0x40 /* might be 0x41 */});
 
-class HeartRateService extends BLEServer {
+class SmartyPantsService extends BLEServer {
 	onReady() {
 		this.deviceName = "SmartyPants";
         this.reading = new UInt8Array(4);
@@ -52,7 +53,7 @@ class HeartRateService extends BLEServer {
 		this.timer = Timer.repeat(id => {
 			sensor.read(2, this.reading);
 			this.notifyValue(characteristic, this.reading);
-		}, 1000);
+		}, 5000);
 	}
 	stopMeasurements() {
 		if (this.timer) {
@@ -62,7 +63,7 @@ class HeartRateService extends BLEServer {
 	}
 }
 
-let hrs = new HeartRateService;
+let hrs = new SmartyPantsService;
 
 
 
